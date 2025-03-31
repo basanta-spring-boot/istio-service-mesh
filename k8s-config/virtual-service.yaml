@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: payment-service
+spec:
+  hosts:
+    - payment-service  # Applies to 'payment-service'
+  http:
+    - route:
+        - destination:
+            host: payment-service
+            subset: pod1  # Traffic goes to pod1
+          weight: 60      # 60% of requests
+        - destination:
+            host: payment-service
+            subset: pod2  # Traffic goes to pod2
+          weight: 40      # 40% of requests
+      retries:
+        attempts: 3       # Retry failed requests up to 3 times
+        perTryTimeout: 1s # Each retry attempt waits max 1s
+      timeout: 2s         # Entire request must finish in 2s
